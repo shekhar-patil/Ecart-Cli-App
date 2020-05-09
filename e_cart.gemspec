@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["shekhar-patil"]
   spec.email         = ["patilshekhar900@gmail.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because RubyGems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{ This is CLI applcation}
+  spec.description   = %q{ This is CLI application.}
+  spec.homepage      = "https://github.com/shekhar-patil/Ecart-Cli-App"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -20,8 +20,8 @@ Gem::Specification.new do |spec|
     spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
     spec.metadata["homepage_uri"] = spec.homepage
-    spec.metadata["source_code_uri"] = "This is e-commerce cli App."
-    spec.metadata["changelog_uri"] = "This is e-commerce cli App."
+    spec.metadata["source_code_uri"] = "https://github.com/shekhar-patil/Ecart-Cli-App"
+    spec.metadata["changelog_uri"] = "https://github.com/shekhar-patil/Ecart-Cli-App"
   else
     raise "RubyGems 2.0 or newer is required to protect against " \
       "public gem pushes."
@@ -37,6 +37,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'thor'
+  spec.add_development_dependency 'pry'
   spec.add_development_dependency "bundler", "~> 1.17"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.2"
