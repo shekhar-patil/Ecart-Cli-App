@@ -7,7 +7,12 @@ module ECart
       klass.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
       klass.tr!("-", "_")
       klass.downcase!
-      klass
+    end
+
+    # This is dynamic loading of the classes
+    def const_missing(c)
+      load("./lib/#{underscore(c.to_s)}.rb")
+      Object.const_get("#{c.to_s}")
     end
   end
 end
