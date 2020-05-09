@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require './lib/e_cart/cli'
+ECart::CLI.start
