@@ -14,5 +14,12 @@ module ECart
       load("./lib/#{underscore(c.to_s)}.rb")
       Object.const_get("#{c.to_s}")
     end
+
+    #convert object into hash
+    def to_hash(object)
+      hash = {}
+      object.instance_variables.each { |var| hash[var.to_s.delete('@')] = object.instance_variable_get(var) }
+      hash
+    end
   end
 end

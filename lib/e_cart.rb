@@ -18,8 +18,13 @@ module ECart
   class UserTask < SubCommandBase
 
     desc "create", "create docs"
-    def create(first_name, last_name, role)
+    def create(first_name, last_name, role = 'customer')
       User.create(first_name, last_name, role)
+    end
+
+    desc 'show', 'show user'
+    def show(first_name=nil, last_name=nil)
+      User.show(first_name, last_name)
     end
 
     desc "details", "user details"
