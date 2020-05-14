@@ -17,14 +17,14 @@ module ECart
 
   class UserTask < SubCommandBase
 
-    desc "create", "create docs"
-    def create(first_name, last_name, role = 'customer')
-      User.create(first_name, last_name, role)
+    desc "create", "create [FIRST_NAME] [LAST_NAME] [EMAIL] [PASSWORD]"
+    def create(first_name, last_name, email, password)
+      User.create(first_name, last_name, email, password, role='customer' )
     end
 
-    desc 'show', 'show user'
-    def show(first_name=nil, last_name=nil)
-      User.show(first_name, last_name)
+    desc 'show', 'show'
+    def show
+      User.show
     end
 
     desc "details", "user details"
@@ -46,10 +46,26 @@ module ECart
   end
 
   class CLI < Thor
-    desc "user", "Create, Update, delete user"
-    subcommand "user", UserTask
+    extend Helper
+    if current_user
+      desc "user", "Create, Update, delete user"
+      subcommand "user", UserTask
 
-    desc 'cart', 'show, add coupon'
-    subcommand 'cart', CartTask
+      desc 'cart', 'show, add coupon'
+      subcommand 'cart', CartTask
+
+      desc 'logout', 'logout'
+      def logout
+        Session.logout
+      end
+    else
+      desc 'user', 'create, Update, delete user'
+      subcommand "user", UserTask
+
+      desc 'login', 'Login [EMAIL] [PASSWORD]'
+      def login(email, password)
+        Session.login(email, password)
+      end
+    end
   end
 end

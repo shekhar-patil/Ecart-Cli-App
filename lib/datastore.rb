@@ -1,13 +1,12 @@
 require 'pry'
 require 'pstore'
 require './lib/helper'
-load './lib/cart.rb'
 class Datastore
   extend ECart::Helper
   def self.create_record(object, obj_name)
     store = PStore.new("#{obj_name}.pstore")
     store.transaction do
-      store[object.first_name] = object
+      store[object.id] = object
     end
   end
 
@@ -16,10 +15,30 @@ class Datastore
     objects = []
     store.transaction(true) do
       store.roots.each do |obj|
-        objects << to_hash(store[obj])
-        #system("echo #{to_hash(store[obj]).values}")
+        objects << store[obj]
       end
     end
     objects
+  end
+
+  def self.current_user
+    store = PStore.new("session.pstore")
+    store.transaction do
+      store['current_user']
+    end
+  end
+
+  def self.create_session(user)
+    store = PStore.new("session.pstore")
+    store.transaction do
+      store['current_user'] = user
+    end
+  end
+
+  def self.delete_session
+    store = PStore.new("session.pstore")
+    store.transaction do
+      store.delete('current_user')
+    end
   end
 end
