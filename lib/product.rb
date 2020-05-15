@@ -33,6 +33,7 @@ class Product < Application
 
     if ((qua = product.quantity.to_i) > 0)
       product.quantity = (qua - 1).to_s # decrement the quantity
+      Datastore.update_record(product, 'product')
       current_user.cart.add_to_cart(product.id, product.price)
     end
   end
