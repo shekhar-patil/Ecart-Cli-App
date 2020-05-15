@@ -1,4 +1,6 @@
 class Application
+  require 'time'
+
   extend ECart::Helper
 
   # belongs_to association
@@ -9,6 +11,7 @@ class Application
   # has_one association
   def self.has_one(resource)
     define_method resource do
+      return unless send("#{resource}_id")
       Datastore.fetch_resource(send("#{resource}_id").to_s, resource.to_s)
     end
   end
@@ -16,7 +19,6 @@ class Application
   # has_many association
   def self.has_many(resource)
     define_method resource do
-      binding.pry
       resource = resource.to_s.delete_suffix('s')
       objects = []
       send("#{resource}_ids").each do |id|

@@ -25,7 +25,7 @@ module ECart
     #print array of objects in tabular form
     def to_table(resources)
       h = to_hash(resources.first)
-      puts "\n#{h.keys.map{|v| [v]}.transpose.insert(0, h.keys)[1]}\n"
+      puts "\n#{h.keys.map{|v| [v]}.transpose.insert(0, h.keys)[1]}\n\n"
 
       resources.each do |obj|
         h = to_hash(obj)
