@@ -22,11 +22,28 @@ module ECart
       hash
     end
 
+    #print array of objects in tabular form
+    def to_table(resources)
+      h = to_hash(resources.first)
+      puts "\n#{h.keys.map{|v| [v]}.transpose.insert(0, h.keys)[1]}\n"
+
+      resources.each do |obj|
+        h = to_hash(obj)
+        puts "#{h.values.map{|v| [v]}.transpose.insert(0, h.keys)[1]}\n"
+      end
+    end
+
+    def find_by_id(id)
+      data_file = self.to_s.downcase
+      Datastore.fetch_resource(id, data_file)
+    end
+
+    # fetch current login user
     def current_user
+      User.current_user
+    rescue
       load './lib/user.rb'
-      user = User.current_user
-      puts "Login as: #{user.first_name} #{user.last_name}" if user
-      user
+      User.current_user
     end
   end
 end

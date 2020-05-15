@@ -2,21 +2,24 @@ require './lib/helper'
 require './lib/datastore'
 require 'pstore'
 
-class User
+class User < Application
   extend ECart::Helper
-  attr_accessor :first_name, :last_name, :role, :cart, :id, :email, :password
+  attr_accessor :first_name, :last_name, :role, :cart_id, :id, :email, :password
 
   @@all = []
+  @@current_user = nil
   # user has first_name, last_name, role
   def initialize(first_name, last_name, email, password, role = 'customer')
-    @id         = rand
+    @id         = rand.to_s
     @first_name = first_name
     @last_name  = last_name
     @password   = password
     @email      = email
     @role       = role
-    @cart       = create_cart(@id)
+    @cart_id    = create_cart(@id)
   end
+
+  has_one :cart
 
   def create_cart(user_id)
     Cart.create(user_id).id
@@ -30,7 +33,7 @@ class User
 
   def self.show
     @@all = Datastore.fetch_records(nil, 'user')
-    puts @@all
+    to_table(@@all)
   end
 
   def self.all
@@ -42,6 +45,11 @@ class User
   end
 
   def self.current_user
-    Datastore.current_user
+    @@current_user ||= Datastore.current_user
+  end
+
+  def self.logout
+    Datastore.delete_session
+    @@current_user = nil
   end
 end

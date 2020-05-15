@@ -12,7 +12,7 @@ class Session
   end
 
   def self.logout
-    Datastore.delete_session
+    User.logout
   end
 end
 

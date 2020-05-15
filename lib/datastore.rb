@@ -3,15 +3,17 @@ require 'pstore'
 require './lib/helper'
 class Datastore
   extend ECart::Helper
-  def self.create_record(object, obj_name)
-    store = PStore.new("#{obj_name}.pstore")
+
+  def self.create_record(object, obj_type)
+    store = PStore.new("#{obj_type}.pstore")
     store.transaction do
       store[object.id] = object
     end
   end
+  self.singleton_class.send(:alias_method, :update_record, :create_record)
 
-  def self.fetch_records(params, obj_name)
-    store = PStore.new("#{obj_name}.pstore")
+  def self.fetch_records(params, obj_type)
+    store = PStore.new("#{obj_type}.pstore")
     objects = []
     store.transaction(true) do
       store.roots.each do |obj|
@@ -29,7 +31,7 @@ class Datastore
   end
 
   def self.create_session(user)
-    store = PStore.new("session.pstore")
+    store = PStore.new('session.pstore')
     store.transaction do
       store['current_user'] = user
     end
@@ -39,6 +41,14 @@ class Datastore
     store = PStore.new("session.pstore")
     store.transaction do
       store.delete('current_user')
+    end
+  end
+
+  def self.fetch_resource(id, obj_type)
+    load("./lib/#{obj_type.to_s}.rb")
+    store = PStore.new("#{obj_type}.pstore")
+    store.transaction do
+      store[id]
     end
   end
 end
