@@ -3,11 +3,6 @@ class Application
 
   extend ECart::Helper
 
-  # belongs_to association
-  def self.belongs_to (resource)
-
-  end
-
   # has_one association
   def self.has_one(resource)
     define_method resource do

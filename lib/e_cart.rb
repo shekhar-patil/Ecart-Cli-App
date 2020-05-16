@@ -57,7 +57,17 @@ module ECart
 
     desc 'apply_coupon', 'apply_coupons [COUPON_ID]*'
     def apply_coupon(coupon_id)
-      Cart.add_coupon(coupon_id.to_s)
+      Coupon.add_coupon(coupon_id.to_s)
+    end
+
+    desc 'remove coupon', 'remove_coupon (It will remove existing coupon on cart)'
+    def remove_coupon
+      Cart.remove_coupon
+    end
+
+    desc 'checkout', 'checkout (Pending cart will get checkedout and new cart will get created)'
+    def checkout
+      Cart.checkout
     end
   end
 
