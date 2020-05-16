@@ -1,6 +1,6 @@
 # User class
 class User < Application
-  attr_accessor :first_name, :last_name, :role, :cart_id, :id, :email, :password
+  attr_accessor :first_name, :last_name, :role, :cart_ids, :id, :email, :password
 
   @@all = []
   @@current_user = nil
@@ -12,10 +12,10 @@ class User < Application
     @password   = password
     @email      = email
     @role       = role
-    @cart_id    = create_cart(@id)
+    @cart_ids   = [create_cart(@id)]
   end
 
-  has_one :cart
+  has_many :carts
 
   def create_cart(user_id)
     Cart.create(user_id).id

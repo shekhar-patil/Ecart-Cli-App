@@ -20,26 +20,34 @@ module ECart
   end
 
   class UserTask < SubCommandBase
-    desc 'create', 'create [FIRST_NAME] [LAST_NAME] [EMAIL] [PASSWORD]'
-    def create(first_name, last_name, email, password, role = 'customer')
-      User.create(first_name, last_name, email, password, role)
+    if !current_user
+      desc 'create', 'create [FIRST_NAME]* [LAST_NAME]* [EMAIL]* [PASSWORD]* (please use string space separated)'
+      def create(first_name, last_name, email, password, role = 'customer')
+        User.create(first_name, last_name, email, password, role)
+      end
     end
 
-    desc 'show', 'show'
-    def show
-      User.show
-    end
+    if current_user
+      # only login user can see details
+      desc 'details', 'user details'
+      def details
+        puts current_user
+      end
 
-    desc 'details', 'user details'
-    def details
-      User.all
+      # Only admin can see all users
+      if current_user.admin?
+        desc 'show', 'show'
+        def show
+          User.show
+        end
+      end
     end
   end
 
   class CartTask < SubCommandBase
     desc 'my_cart', 'my_cart'
     def my_cart
-      Cart.my_cart
+      Cart.my_cart(Cart.active)
     end
 
     desc 'show_coupons', 'show_coupons'
@@ -47,26 +55,41 @@ module ECart
       Coupon.show
     end
 
-    desc 'apply_coupon', 'apply_coupons [COUPON_ID]'
+    desc 'apply_coupon', 'apply_coupons [COUPON_ID]*'
     def apply_coupon(coupon_id)
       Cart.add_coupon(coupon_id.to_s)
     end
   end
 
   class ProductTask < SubCommandBase
-    desc 'add', 'add [NAME] [CATEGORY] [PRICE] [QUANTITY]'
-    def add_product(name, category = 'general', price = 500, quantity = '50')
-      Product.create(name, category, price, quantity)
+
+    # only admin can add the product
+    if current_user && current_user.admin?
+      desc 'create', 'create [NAME]* [CATEGORY] [PRICE] [QUANTITY]'
+      def create(name, category = 'general', price = 500, quantity = '50')
+        Product.create(name, category, price, quantity)
+      end
     end
 
-    desc 'show', 'show'
-    def show
-      Product.show
+    desc 'show', 'show [category]'
+    def show(category=nil)
+      Product.show(category)
     end
 
-    desc 'buy', 'buy [PRODUCT_ID]'
-    def buy(product_id)
-      Product.buy(product_id)
+    desc 'add_to_cart', 'add_to_cart [PRODUCT_ID]*'
+    def add_to_cart(product_id)
+      Product.add_to_cart(product_id)
+    end
+
+    desc 'remove_from_cart', 'remove_from_cart [PRODUCT_ID]*'
+    def remove_from_cart(product_id)
+      Product.remove_from_cart(product_id)
+    end
+
+    desc 'categories', 'categories'
+    def catergories
+      puts "All product categories are as the following:\n\n"
+      puts Product.categories
     end
   end
 
@@ -89,25 +112,28 @@ module ECart
       end
 
       if current_user.admin?
-        desc 'add_coupon', 'add_coupon [NAME] [one_time/multi_time/unlimited] [QUANTITY] ["16/05/2020 12PM"] ["26/05/2020 12PM"]'
-        def add_coupon(name, discount_per=10, type='unlimited', quantity=0, start_time=nil, end_time=nil)
+        desc 'add_coupon', 'add_coupon [NAME]* [one_time/multi_time/unlimited] [QUANTITY] ["16/05/2020 12PM"] ["26/05/2020 12PM"]'
+        def add_coupon(name, discount_per=10, type='unlimited', quantity=0, valid_from=nil, expire_at=nil)
           quantity = 1 if type.to_s == 'one_time'
           quantity = 10 if type.to_s == 'multi_time' && quantity == 0
-          start_time = Time.now.to_s if start_time == nil
-          end_time = (Time.parse(start_time) + 10*60*60*24).to_s if end_time == nil # add 10 days to start_time
+          valid_from = Time.now.to_s if valid_from == nil
+          expire_at = (Time.parse(valid_from) + 10*60*60*24).to_s if expire_at == nil # will expire after 10 days of valid_from
 
-          Coupon.create(name, discount_per, type, quantity, start_time, end_time)
+          Coupon.create(name, discount_per, type, quantity, valid_from, expire_at)
         end
       end
-      puts "\nLogIn as: #{current_user.first_name} #{current_user.last_name}\n"
+
+      puts "LogIn as: #{current_user.first_name} #{current_user.last_name}\n\n"
+      puts "Role    : Admin\n\n" if current_user.admin?
     else
       desc 'user', 'User related actions'
       subcommand 'user', UserTask
 
-      desc 'login', 'Login [EMAIL] [PASSWORD]'
+      desc 'login', 'Login [EMAIL]* [PASSWORD]*'
       def login(email, password)
         Session.login(email, password)
       end
+
       puts 'Please login or create account to buy the product'
     end
   end

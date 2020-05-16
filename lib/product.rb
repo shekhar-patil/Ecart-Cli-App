@@ -12,21 +12,19 @@ class Product < Application
     @quantity       = quantity
   end
 
-  # Associations
-  belongs_to 'cart'
-
   def self.create(name, category, price, quantity)
     product = Product.new(name, category, price, quantity)
     Datastore.create_record(product, 'product')
     puts "#{product.name} product added to store."
   end
 
-  def self.show
+  def self.show(category)
     @@all = Datastore.fetch_records(nil, 'product')
-    to_table(@@all)
+    selected = @@all.select{|p| p.category == category} if category
+    to_table(selected || @@all)
   end
 
-  def self.buy(id)
+  def self.add_to_cart(id)
     product = find_by_id(id)
 
     return (puts 'Please enter correct product id!!') unless product
@@ -34,8 +32,21 @@ class Product < Application
     if ((qua = product.quantity.to_i) > 0)
       product.quantity = (qua - 1).to_s # decrement the quantity
       Datastore.update_record(product, 'product')
-      current_user.cart.add_to_cart(product.id, product.price)
+      Cart.active.add_product(product.id, product.price)
+      puts 'product added!'
     end
+  end
+
+  def self.remove_from_cart(id)
+    product = find_by_id(id)
+
+    return (puts 'Please enter correct product id!!') unless product
+
+    qua = product.quantity.to_i
+    product.quantity = (qua + 1).to_s # increment the quantity
+    Datastore.update_record(product, 'product')
+    Cart.active.remove_product(product.id, product.price)
+    puts 'Product removed!'
   end
 
   def self.all
@@ -46,8 +57,8 @@ class Product < Application
     end
   end
 
-  def disply_all_categories
-
+  def self.categories
+    Product.all.map {|p| p.category}.uniq.join(', ')
   end
 end
 
