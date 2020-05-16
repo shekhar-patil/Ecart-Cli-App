@@ -7,10 +7,13 @@ class Product < Application
   def initialize(name, category, price, quantity)
     @id             = rand.to_s
     @name           = name
-    @category       = category
+    @category       = category.downcase
     @price          = price
     @quantity       = quantity
+    super
   end
+
+  uniqueness :name
 
   def self.create(name, category, price, quantity)
     product = Product.new(name, category, price, quantity)
@@ -20,7 +23,7 @@ class Product < Application
 
   def self.show(category)
     @@all = Datastore.fetch_records(nil, 'product')
-    selected = @@all.select{|p| p.category == category} if category
+    selected = @@all.select{|p| p.category == category.downcase} if category
     to_table(selected || @@all)
   end
 

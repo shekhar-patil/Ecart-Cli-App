@@ -13,9 +13,11 @@ class User < Application
     @email      = email
     @role       = role
     @cart_ids   = [create_cart(@id)]
+    super
   end
 
   has_many :carts
+  uniqueness :email
 
   def create_cart(user_id)
     Cart.create(user_id).id
@@ -23,7 +25,8 @@ class User < Application
 
   def self.create(first_name, last_name, email, password, role)
     user = User.new(first_name, last_name, email, password, role)
-    Datastore.create_record(user, 'user')
+
+    #Datastore.create_record(user, 'user')
     @@all << user
     puts "Welcome #{user.first_name}!!"
   end

@@ -1,7 +1,10 @@
 class Application
   require 'time'
-
   extend ECart::Helper
+
+  def initialize(*args)
+    check_uniqueness
+  end
 
   # has_one association
   def self.has_one(resource)
@@ -20,6 +23,21 @@ class Application
         objects << Datastore.fetch_resource(id.to_s, resource.to_s)
       end
       objects
+    end
+  end
+
+  # uniqueness validation
+  def self.uniqueness(*args)
+    define_method 'check_uniqueness' do
+      attributes = args.map(&:to_s)
+      self.class.all.each do |resource|
+        attributes.each do |attribute|
+          if resource.send(attribute).to_s == send(attribute)
+            puts "\nValidation Error: #{attribute} is already taken!\n"
+            exit!
+          end
+        end
+      end
     end
   end
 end

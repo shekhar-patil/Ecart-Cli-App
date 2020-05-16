@@ -11,7 +11,11 @@ class Coupon < Application
     @quantity       = quantity
     @valid_from     = Time.parse(valid_from).to_s
     @expire_at      = Time.parse(expire_at).to_s
+    super
   end
+
+  # validation
+  uniqueness :name
 
   def self.create(name, discount_per, type, quantity, valid_from, expire_at)
     coupon = Coupon.new(name, discount_per, type, quantity, valid_from, expire_at)
@@ -65,6 +69,15 @@ class Coupon < Application
       'Coupon is expired'
     else
       'no_errors'
+    end
+  end
+
+  # Coupon.all
+  def self.all
+    if @@all == []
+      @@all = Datastore.fetch_records(nil, 'coupon')
+    else
+      @@all
     end
   end
 end
