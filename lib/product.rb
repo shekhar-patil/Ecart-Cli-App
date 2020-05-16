@@ -37,6 +37,8 @@ class Product < Application
       Datastore.update_record(product, 'product')
       Cart.active.add_product(product.id, product.price)
       puts 'product added!'
+    else
+      puts 'Product out of stock!!'
     end
   end
 

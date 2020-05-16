@@ -25,13 +25,13 @@ class User < Application
 
   def self.create(first_name, last_name, email, password, role)
     user = User.new(first_name, last_name, email, password, role)
-
-    #Datastore.create_record(user, 'user')
+    Datastore.create_record(user, 'user')
     @@all << user
     puts "Welcome #{user.first_name}!!"
   end
 
-  def self.show
+  def self.show(user = nil)
+    return to_table([current_user]) if user == 'current_user'
     @@all = Datastore.fetch_records(nil, 'user')
     to_table(@@all)
   end
@@ -47,7 +47,7 @@ class User < Application
 
   # returns current_user
   def self.current_user
-    @@current_user ||= Datastore.current_user
+    @@current_user ||= find_by_id(Datastore.current_user_id)
   end
 
   # logout user

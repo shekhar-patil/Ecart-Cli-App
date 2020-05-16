@@ -73,17 +73,19 @@ class Cart < Application
 
     Datastore.update_record(cart, 'cart')
     cart = Cart.create(current_user.id)
-
+    user = current_user
+    user.cart_ids << cart.id
     # add new cart to user
-    current_user.cart_id << cart.id
-    Datastore.update_record(current_user, 'user')
+    Datastore.update_record(user, 'user')
 
     puts 'Amount received! Order placed!'
   end
 
   def self.show_previous_bills
-    current_user.carts.each do |cart|
-      puts "=============Bill created_on: #{cart.created_at}====================\n\n"
+    active_cart_id = Cart.active.id
+    current_user.carts.each_with_index do |cart, i|
+      next if cart.id == active_cart_id
+      puts "\n\n========== Bill No: #{i} | Created_on: #{cart.created_at} ===============\n\n"
       my_cart(cart, true)
     end
   end
@@ -103,15 +105,15 @@ class Cart < Application
     if cart.coupon
       puts "======Applied coupon                : '#{cart.coupon.name}'\n"
       puts "======Coupon discount               : #{cart.coupon.discount_per}%\n"
-      applied_dis = cart.total_price * (cart.coupon.discount_per/100.0)
+      applied_dis = cart.total_price.to_i * (cart.coupon.discount_per.to_i/100.0)
       puts "======You have saved                : #{applied_dis} Rs."
     end
 
-    if !cart.coupon && cart.total_price > 10000
+    if !cart.coupon && (cart.total_price.to_i > 10000)
       puts "======Congratulations, Rs. 500 Discount applied due to purchase of more than 10000"
       applied_dis = 500
     end
-    puts "======Final price after discount is : #{cart.total_price - applied_dis} Rs\n\n"
+    puts "======Final price after discount is : #{cart.total_price.to_i - applied_dis} Rs\n\n"
     puts "Tip: Please apply coupon for extra discount\n"         unless cart.coupon || previous_bill
     puts 'Thanks You!!'
   end

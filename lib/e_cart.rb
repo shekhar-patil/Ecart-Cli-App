@@ -26,12 +26,11 @@ module ECart
         User.create(first_name, last_name, email, password, role)
       end
     end
-
-    if current_user
+    if user = current_user
       # only login user can see details
       desc 'details', 'user details'
       def details
-        puts current_user
+        User.show('current_user')
       end
 
       # Only admin can see all users
@@ -60,7 +59,7 @@ module ECart
       Coupon.add_coupon(coupon_id.to_s)
     end
 
-    desc 'remove coupon', 'remove_coupon (It will remove existing coupon on cart)'
+    desc 'remove_coupon', 'remove_coupon (It will remove existing coupon on cart)'
     def remove_coupon
       Cart.remove_coupon
     end
@@ -68,6 +67,11 @@ module ECart
     desc 'checkout', 'checkout (Pending cart will get checkedout and new cart will get created)'
     def checkout
       Cart.checkout
+    end
+
+    desc 'previous_bill', 'previous_bill'
+    def previous_bill
+      Cart.show_previous_bills
     end
   end
 

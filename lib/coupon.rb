@@ -8,7 +8,7 @@ class Coupon < Application
     @name           = name
     @discount_per   = discount_per
     @type           = type              # unlimited, one_time, multi_time
-    @quantity       = quantity
+    @quantity       = quantity.to_s
     @valid_from     = Time.parse(valid_from).to_s
     @expire_at      = Time.parse(expire_at).to_s
     super
@@ -40,7 +40,7 @@ class Coupon < Application
     cart.apply_coupon(coupon_id)
 
     if coupon.type != 'unlimited'
-      coupon.quantity = coupon.quantity - 1
+      coupon.quantity = (coupon.quantity.to_i - 1).to_s
       Datastore.update_record(coupon, 'coupon')
     end
 

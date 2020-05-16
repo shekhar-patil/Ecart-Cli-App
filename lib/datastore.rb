@@ -23,17 +23,17 @@ class Datastore
     objects
   end
 
-  def self.current_user
+  def self.current_user_id
     store = PStore.new("session.pstore")
     store.transaction do
       store['current_user']
     end
   end
 
-  def self.create_session(user)
+  def self.create_session(user_id)
     store = PStore.new('session.pstore')
     store.transaction do
-      store['current_user'] = user
+      store['current_user'] = user_id
     end
   end
 

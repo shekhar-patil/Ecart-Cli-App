@@ -3,11 +3,10 @@ class Session
   def self.login(email, password)
     user = User.all.select {|u| (u.email == email && u.password == password)}.first
     if user
-      @@current_user = user
-      Datastore.create_session(user)
+      Datastore.create_session(user.id)
       puts 'Successfully logged In'
     else
-      puts 'Invalid login password\nPlease enter correct credentials or create user'
+      puts "Invalid login email/password\nPlease enter correct credentials or create user"
     end
   end
 
