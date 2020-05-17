@@ -10,7 +10,7 @@ RSpec.configure do |config|
   ENV['env'] = 'testing' # this is to check environment in the app.
 
   # change database folder for testing
-  Datastore.database_folder = 'test_db'
+  Datastore.database_folder = 'test_db/'
 
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"

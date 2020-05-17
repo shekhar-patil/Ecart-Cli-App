@@ -28,6 +28,7 @@ class User < Application
     Datastore.create_record(user, 'user')
     @@all << user
     puts "Welcome #{user.first_name}!!"
+    user
   end
 
   def self.show(user = nil)
