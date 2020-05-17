@@ -1,5 +1,6 @@
-class Session
-  extend ECart::Helper
+class Session < Application
+
+  # login user by email password
   def self.login(email, password)
     user = User.all.select {|u| (u.email == email && u.password == password)}.first
     if user
@@ -10,6 +11,7 @@ class Session
     end
   end
 
+  # logout current logged in user
   def self.logout
     User.logout
   end

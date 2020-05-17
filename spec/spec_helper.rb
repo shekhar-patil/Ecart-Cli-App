@@ -1,5 +1,4 @@
 require "bundler/setup"
-require "e_cart"
 require './lib/datastore.rb'
 
 RSpec.configure do |config|
@@ -11,6 +10,9 @@ RSpec.configure do |config|
 
   # change database folder for testing
   Datastore.database_folder = 'test_db/'
+  require "e_cart"
+
+  Dir["./lib/*.rb"].each {|file| require file }
 
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"

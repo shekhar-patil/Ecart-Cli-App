@@ -1,5 +1,4 @@
 class Product < Application
-  extend ECart::Helper
 
   attr_accessor :id, :category, :name, :price, :quantity
   @@all = []
@@ -18,7 +17,9 @@ class Product < Application
   def self.create(name, category, price, quantity)
     product = Product.new(name, category, price, quantity)
     Datastore.create_record(product, 'product')
+    @@all << product
     puts "#{product.name} product added to store."
+    product
   end
 
   def self.show(category)
@@ -30,28 +31,34 @@ class Product < Application
   def self.add_to_cart(id)
     product = find_by_id(id)
 
-    return (puts 'Please enter correct product id!!') unless product
+    return (p 'Please enter correct product id!!') unless product
 
-    if ((qua = product.quantity.to_i) > 0)
-      product.quantity = (qua - 1).to_s # decrement the quantity
-      Datastore.update_record(product, 'product')
-      Cart.active.add_product(product.id, product.price)
-      puts 'product added!'
-    else
-      puts 'Product out of stock!!'
-    end
+    message = if ((qua = product.quantity.to_i) > 0)
+                product.quantity = (qua - 1).to_s # decrement the quantity
+                Datastore.update_record(product, 'product')
+                Cart.active.add_product(product.id, product.price)
+                'product added to the cart!'
+              else
+                'Product out of stock!!'
+              end
+    p message
   end
 
   def self.remove_from_cart(id)
     product = find_by_id(id)
 
-    return (puts 'Please enter correct product id!!') unless product
+    return (p 'Please enter correct product id!!') unless product
 
-    qua = product.quantity.to_i
-    product.quantity = (qua + 1).to_s # increment the quantity
-    Datastore.update_record(product, 'product')
-    Cart.active.remove_product(product.id, product.price)
-    puts 'Product removed!'
+    status = Cart.active.remove_product(product.id, product.price)
+    message = if status
+                qua = product.quantity.to_i
+                product.quantity = (qua + 1).to_s # increment the quantity
+                Datastore.update_record(product, 'product')
+                "\nProduct successfully removed from the cart\n"
+              else
+                "\nProduct does not exist in cart!\n"
+              end
+    p message
   end
 
   def self.all

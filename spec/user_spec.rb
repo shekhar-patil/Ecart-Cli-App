@@ -13,7 +13,19 @@ RSpec.describe User do
     it 'all' do
       expect(User.all.include?(@user_customer)).to be true
       expect(User.all.include?(@user_admin)).to be true
-      expect(User.all.size).to be 2
+    end
+
+    it 'current_user' do
+      expect(User.current_user).to be nil
+
+      Session.login('test@customer.com', 'test@123')
+
+      expect(User.current_user.first_name).equal? ('test')
+      expect(User.current_user.last_name).equal? ('customer')
+      expect(User.current_user.email).equal? ('test@customer.com')
+      expect(User.current_user.role).equal? ('customer')
+
+      Session.logout
     end
   end
 
