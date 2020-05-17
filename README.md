@@ -3,6 +3,7 @@
 This is Ruby CLI application.
 
 In this project I am exploring power of metaprogramming in Ruby and trying to add similar methods like Rails application as the following:
+
     Associations:
         * has_many
         * has_one
