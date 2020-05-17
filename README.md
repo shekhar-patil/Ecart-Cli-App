@@ -25,7 +25,7 @@ Install bundler using:
 ```ruby
 gem install bundler -v 1.17.3
 ```
-Then close this repository and you are good to go.
+Then clone this repository and you are good to go.
 
 ## Contributing
 
