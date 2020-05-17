@@ -48,7 +48,7 @@ class Coupon < Application
   end
 
   def increase_quantity
-    self.quantity += 1
+    self.quantity = (self.quantity.to_i + 1).to_i
     Datastore.update_record(self, 'coupon')
   end
 
