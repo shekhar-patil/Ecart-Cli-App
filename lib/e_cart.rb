@@ -101,7 +101,7 @@ module ECart
     end
 
     desc 'categories', 'categories'
-    def catergories
+    def categories
       puts "All product categories are as the following:\n\n"
       puts Product.categories
     end
@@ -126,7 +126,7 @@ module ECart
       end
 
       if current_user.admin?
-        desc 'add_coupon', 'add_coupon [NAME]* [one_time/multi_time/unlimited] [QUANTITY] ["16/05/2020 12PM"] ["26/05/2020 12PM"]'
+        desc 'add_coupon', 'add_coupon [NAME]* [DISCOUNT_PERCENT] [one_time/multi_time/unlimited] [QUANTITY] ["16/05/2020 12PM"] ["26/05/2020 12PM"]'
         def add_coupon(name, discount_per=10, type='unlimited', quantity=0, valid_from=nil, expire_at=nil)
           quantity = 1 if type.to_s == 'one_time'
           quantity = 10 if type.to_s == 'multi_time' && quantity == 0
