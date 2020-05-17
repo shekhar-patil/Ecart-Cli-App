@@ -82,36 +82,36 @@ class Cart < Application
     active_cart_id = Cart.active.id
     current_user.carts.each_with_index do |cart, i|
       next if cart.id == active_cart_id
-      p "\n\n========== Bill No: #{i} | Created_on: #{cart.created_at} ===============\n\n"
+      puts "\n\n========== Bill No: #{i} | Created_on: #{cart.created_at} ===============\n\n"
       my_cart(cart, true)
     end
   end
 
   def self.my_cart(cart, previous_bill = false)
-    p "==================Your Cart====================\n\n" unless previous_bill
-    return (p "==============Your cart is empty================\n\n") if cart.products.size == 0
+    puts "==================Your Cart====================\n\n" unless previous_bill
+    return (p "==============Your cart is empty================") if cart.products.size == 0
 
-    p "====================Items=======================\n"
+    puts "\n====================Items=======================\n"
     cart.products.each_with_index do |p, i|
-      p " [#{p.id}] #{i+1})    #{p.name}      #{p.price} Rs.\n"
+      puts " [#{p.id}] #{i+1})    #{p.name}      #{p.price} Rs.\n"
     end
-    p "================================================\n\n"
-    p "======Total Purchase amount         : #{cart.total_price} Rs.\n"
+    puts "================================================\n\n"
+    puts "======Total Purchase amount         : #{cart.total_price} Rs.\n"
 
     applied_dis = 0
     if cart.coupon
-      p "======Applied coupon                : '#{cart.coupon.name}'\n"
-      p "======Coupon discount               : #{cart.coupon.discount_per}%\n"
+      puts "======Applied coupon                : '#{cart.coupon.name}'\n"
+      puts "======Coupon discount               : #{cart.coupon.discount_per}%\n"
       applied_dis = cart.total_price.to_i * (cart.coupon.discount_per.to_i/100.0)
-      p "======You have saved                : #{applied_dis} Rs."
+      puts "======You have saved                : #{applied_dis} Rs."
     end
 
     if !cart.coupon && (cart.total_price.to_i > 10000)
-      p "======Congratulations, Rs. 500 Discount applied due to purchase of more than 10000"
+      puts "======Congratulations, Rs. 500 Discount applied due to purchase of more than 10000"
       applied_dis = 500
     end
-    p "======Final price after discount is : #{cart.total_price.to_i - applied_dis} Rs\n\n"
-    p "Tip: Please apply coupon for extra discount\n"         unless cart.coupon || previous_bill
+    puts "======Final price after discount is : #{cart.total_price.to_i - applied_dis} Rs\n\n"
+    puts "Tip: Please apply coupon for extra discount\n"         unless cart.coupon || previous_bill
     p 'Thanks You!!'
   end
 

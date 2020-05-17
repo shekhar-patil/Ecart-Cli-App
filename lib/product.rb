@@ -58,7 +58,8 @@ class Product < Application
               else
                 "\nProduct does not exist in cart!\n"
               end
-    p message
+    puts message
+    return message
   end
 
   def self.all

@@ -20,10 +20,10 @@ RSpec.describe User do
 
       Session.login('test@customer.com', 'test@123')
 
-      expect(User.current_user.first_name).equal? ('test')
-      expect(User.current_user.last_name).equal? ('customer')
-      expect(User.current_user.email).equal? ('test@customer.com')
-      expect(User.current_user.role).equal? ('customer')
+      expect(User.current_user.first_name).to eq ('test')
+      expect(User.current_user.last_name).to eq ('customer')
+      expect(User.current_user.email).to eq ('test@customer.com')
+      expect(User.current_user.role).to eq ('customer')
 
       Session.logout
     end
@@ -44,7 +44,7 @@ RSpec.describe User do
       begin
         User.create('test', 'customer', 'test@customer.com', 'test@123', 'customer')
       rescue SystemExit => e
-        expect(e.message).equal? "\nValidation Error: email is already taken!\n"
+        expect(e.message).to eq "Validation Error: email is already taken!"
       end
       expect(User.all.select {|user| user.email == 'test@customer.com'}.size).to be 1
     end

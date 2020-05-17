@@ -68,7 +68,7 @@ RSpec.describe Product do
       begin
         Product.create('Mango', 'fruit', 120, 100)
       rescue SystemExit => e
-        expect(e.message).to eq "\nValidation Error: name is already taken!\n"
+        expect(e.message).to eq "Validation Error: name is already taken!"
       end
       expect(Product.all.select {|product| product.name == 'Mango'}.size).to be 1
     end

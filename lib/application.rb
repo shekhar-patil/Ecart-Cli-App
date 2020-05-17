@@ -33,7 +33,7 @@ class Application
       self.class.all.each do |resource|
         attributes.each do |attribute|
           if resource.send(attribute).to_s == send(attribute)
-            abort(p "\nValidation Error: #{attribute} is already taken!\n")
+            abort(p "Validation Error: #{attribute} is already taken!")
           end
         end
       end
